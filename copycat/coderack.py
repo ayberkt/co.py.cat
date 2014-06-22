@@ -18,20 +18,22 @@ codeletsUsed = {}
 
 class CodeRack(object):
     def __init__(self):
-        #logging.debug('coderack.__init__()')
+        # logging.debug('coderack.__init__()')
         self.speedUpBonds = False
         self.removeBreakerCodelets = False
         self.removeTerracedScan = False
         self.pressures = CoderackPressures()
         self.pressures.initialisePressures()
         self.reset()
-        self.initialCodeletNames = ('bottom-up-bond-scout', 'replacement-finder', 'bottom-up-correspondence-scout')
+        self.initialCodeletNames = ('bottom-up-bond-scout',
+                                    'replacement-finder',
+                                    'bottom-up-correspondence-scout')
         self.codeletMethodsDir = None
         self.runCodelets = {}
         self.postings = {}
 
     def reset(self):
-        #logging.debug('coderack.reset()')
+        # logging.debug('coderack.reset()')
         from temperature import temperature
 
         self.codelets = []
@@ -62,20 +64,20 @@ class CodeRack(object):
 
     def postTopDownCodelets(self):
         for node in slipnet.slipnodes:
-            #logging.info('Trying slipnode: %s' % node.get_name())
+            # logging.info('Trying slipnode: %s' % node.get_name())
             if node.activation == 100.0:
-                #logging.info('using slipnode: %s' % node.get_name())
+                # logging.info('using slipnode: %s' % node.get_name())
                 for codeletName in node.codelets:
                     probability = workspaceFormulas.probabilityOfPosting(codeletName)
                     howMany = workspaceFormulas.howManyToPost(codeletName)
-                    #print '%s:%d' % (codeletName,howMany)
+                    # print '%s:%d' % (codeletName,howMany)
                     for unused in range(0, howMany):
                         if random.random() < probability:
                             urgency = self.getUrgencyBin(node.activation * node.conceptualDepth / 100.0)
                             codelet = Codelet(codeletName, urgency, self.codeletsRun)
                             codelet.arguments += [node]
                             logging.info('Post top down: %s, with urgency: %d' % (codelet.name, urgency))
-                            #logging.info("From slipnode %s, activation: %s, depth: %s" %(node.get_name(),node.activation,node.conceptualDepth) )
+                            # logging.info("From slipnode %s, activation: %s, depth: %s" %(node.get_name(),node.activation,node.conceptualDepth) )
                             self.post(codelet)
 
     def postBottomUpCodelets(self):
@@ -94,7 +96,7 @@ class CodeRack(object):
     def __postBottomUpCodelets(self, codeletName):
         probability = workspaceFormulas.probabilityOfPosting(codeletName)
         howMany = workspaceFormulas.howManyToPost(codeletName)
-        #if codeletName == 'bottom-up-bond-scout':
+        # if codeletName == 'bottom-up-bond-scout':
         #   print 'post --> %f:%d' % (probability,howMany)
         if self.speedUpBonds:
             if 'bond' in codeletName or 'group' in codeletName:
@@ -209,9 +211,9 @@ class CodeRack(object):
         return self.codelets[0]
 
     def postInitialCodelets(self):
-        #logging.debug('Posting initial codelets')
-        #logging.debug('Number of inital codelets: %d' % len(self.initialCodeletNames))
-        #logging.debug('Number of workspaceObjects: %d' % workspace.numberOfObjects())
+        # logging.debug('Posting initial codelets')
+        # logging.debug('Number of inital codelets: %d' % len(self.initialCodeletNames))
+        # logging.debug('Number of workspaceObjects: %d' % workspace.numberOfObjects())
         for name in self.initialCodeletNames:
             for unused in range(0, workspaceFormulas.numberOfObjects()):
                 codelet = Codelet(name, 1, self.codeletsRun)
@@ -275,7 +277,7 @@ class CodeRack(object):
             return None
         temp = formulas.Temperature
         scale = (100.0 - temp + 10.0) / 15.0
-        #       threshold = sum( [ c.urgency ** scale for c in self.codelets ] ) * random.random()
+        # threshold = sum( [ c.urgency ** scale for c in self.codelets ] ) * random.random()
         urgsum = 0.0
         for codelet in self.codelets:
             urg = codelet.urgency ** scale
@@ -312,25 +314,25 @@ class CodeRack(object):
         self.codeletsRun += 1
         self.runCodelets[methodName] = self.runCodelets.get(methodName, 0) + 1
 
-        #if self.codeletsRun > 2000:
-        #import sys
-        #print "running too many codelets"
-        #for name,count in self.postings.iteritems():
-        #print '%d:%s' % (count,name)
-        #raise ValueError
-        #else:
+        # if self.codeletsRun > 2000:
+        # import sys
+        # print "running too many codelets"
+        # for name,count in self.postings.iteritems():
+        # print '%d:%s' % (count,name)
+        # raise ValueError
+        # else:
         #   print 'running %d' % self.codeletsRun
         if not self.codeletMethodsDir:
             self.getCodeletmethods()
-        #if not self.codeletMethodsDir:
+        # if not self.codeletMethodsDir:
         method = self.methods[methodName]
         if not method:
             raise ValueError('Found %s in codeletMethods, but cannot get it' % methodName)
         if not callable(method):
             raise RuntimeError('Cannot call %s()' % methodName)
         args, varargs, varkw, defaults = inspect.getargspec(method)
-        #global codeletsUsed
-        #codeletsUsed[methodName] = codeletsUsed.get(methodName,0) + 1
+        # global codeletsUsed
+        # codeletsUsed[methodName] = codeletsUsed.get(methodName,0) + 1
         try:
             if 'codelet' in args:
                 method(codelet)
