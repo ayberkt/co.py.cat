@@ -54,7 +54,7 @@ class CodeRack(object):
         return bin + 1
 
     def post(self, codelet):
-        #logging.info('Posting codelet called: %s, with urgency %f' % (codelet.name,codelet.urgency))
+        # logging.info('Posting codelet called: %s, with urgency %f' % (codelet.name,codelet.urgency))
         self.postings[codelet.name] = self.postings.get(codelet.name, 0) + 1
         self.pressures.addCodelet(codelet)
         self.codelets += [codelet]
@@ -116,7 +116,7 @@ class CodeRack(object):
         self.pressures.removeCodelet(codelet)
 
     def newCodelet(self, name, oldCodelet, strength, arguments=None):
-        #logging.debug('Posting new codelet called %s' % name)
+        # logging.debug('Posting new codelet called %s' % name)
         urgency = self.getUrgencyBin(strength)
         newCodelet = Codelet(name, urgency, self.codeletsRun)
         if arguments:
@@ -231,31 +231,30 @@ class CodeRack(object):
         import codeletMethods
 
         self.codeletMethodsDir = dir(codeletMethods)
-        knownCodeletNames = (
-        'breaker',
-        'bottom-up-description-scout',
-        'top-down-description-scout',
-        'description-strength-tester',
-        'description-builder',
-        'bottom-up-bond-scout',
-        'top-down-bond-scout--category',
-        'top-down-bond-scout--direction',
-        'bond-strength-tester',
-        'bond-builder',
-        'top-down-group-scout--category',
-        'top-down-group-scout--direction',
-        'group-scout--whole-string',
-        'group-strength-tester',
-        'group-builder',
-        'replacement-finder',
-        'rule-scout',
-        'rule-strength-tester',
-        'rule-builder',
-        'rule-translator',
-        'bottom-up-correspondence-scout',
-        'important-object-correspondence-scout',
-        'correspondence-strength-tester',
-        'correspondence-builder',
+        knownCodeletNames = ('breaker',
+                             'bottom-up-description-scout',
+                             'top-down-description-scout',
+                             'description-strength-tester',
+                             'description-builder',
+                             'bottom-up-bond-scout',
+                             'top-down-bond-scout--category',
+                             'top-down-bond-scout--direction',
+                             'bond-strength-tester',
+                             'bond-builder',
+                             'top-down-group-scout--category',
+                             'top-down-group-scout--direction',
+                             'group-scout--whole-string',
+                             'group-strength-tester',
+                             'group-builder',
+                             'replacement-finder',
+                             'rule-scout',
+                             'rule-strength-tester',
+                             'rule-builder',
+                             'rule-translator',
+                             'bottom-up-correspondence-scout',
+                             'important-object-correspondence-scout',
+                             'correspondence-strength-tester',
+                             'correspondence-builder',
         )
         self.methods = {}
         for codeletName in knownCodeletNames:
